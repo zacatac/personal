@@ -1,0 +1,13 @@
+{
+  "name": "personal",
+  "version": "1.0.0",
+  "description": "personal site for zack field",
+  "main": "index.js",
+  "repository": "git@github.com:zacatac/personal.git",
+  "author": "Zack Field",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}
