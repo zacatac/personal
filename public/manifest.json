@@ -1,8 +1,0 @@
-{
-  "short_name": "Zack's Site",
-  "name": "Zackery Field's Personal Site",
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
-}
