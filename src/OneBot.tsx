@@ -10,7 +10,7 @@ import { useQuery } from "react-query";
 import { BACKEND_URL } from "./config";
 
 const fetchProtectedData = async (token: string) => {
-  const response = await axios.get(`${BACKEND_URL}/api/protected`, {
+  const response = await axios.get(`${BACKEND_URL}/me`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -39,7 +39,10 @@ const OneBotChat = () => {
   return (
     <div>
       <h2>Protected Data</h2>
-      <p>{data?.message}</p>
+      <dl className="bg-white shadow-md rounded-lg p-4">
+        <dt className="text-lg font-medium text-gray-700">User ID</dt>
+        <dd className="mt-1 text-sm text-gray-900">{data?.clerk_id}</dd>
+      </dl>
     </div>
   );
 };
