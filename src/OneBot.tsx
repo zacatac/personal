@@ -5,17 +5,24 @@ import {
   SignedOut,
   useAuth,
 } from "@clerk/clerk-react";
-import axios from "axios";
 import { useQuery } from "react-query";
+import { OpenAPI, userMeGet } from "./client";
 import { BACKEND_URL } from "./config";
-
-const fetchProtectedData = async (token: string) => {
-  const response = await axios.get(`${BACKEND_URL}/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+const fetchMe = async (token: string) => {
+  // TODO: this should be applied globally
+  OpenAPI.interceptors.request.use((config) => {
+    config.baseURL = BACKEND_URL;
+    if (token) {
+      if (!config.headers) {
+        config.headers = {};
+      }
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
   });
-  return response.data;
+
+  const me = userMeGet();
+  return me;
 };
 
 const OneBotChat = () => {
@@ -25,7 +32,7 @@ const OneBotChat = () => {
     async () => {
       const token = await getToken();
       if (!token) throw new Error("No token available");
-      return fetchProtectedData(token);
+      return fetchMe(token);
     },
     {
       // The query will not execute until the token exists
@@ -38,7 +45,7 @@ const OneBotChat = () => {
 
   return (
     <div>
-      <h2>Protected Data</h2>
+      <h2>Profile</h2>
       <dl className="bg-white shadow-md rounded-lg p-4">
         <dt className="text-lg font-medium text-gray-700">User ID</dt>
         <dd className="mt-1 text-sm text-gray-900">{data?.clerk_id}</dd>
