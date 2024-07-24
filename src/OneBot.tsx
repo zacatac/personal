@@ -10,7 +10,7 @@ import { useQuery } from "react-query";
 import { BACKEND_URL } from "./config";
 
 const fetchProtectedData = async (token: string) => {
-  const response = await axios.get(BACKEND_URL, {
+  const response = await axios.get(`${BACKEND_URL}/api/protected`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
