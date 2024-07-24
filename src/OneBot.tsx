@@ -7,11 +7,10 @@ import {
 } from "@clerk/clerk-react";
 import axios from "axios";
 import { useQuery } from "react-query";
-
-const LOCAL_API_URL = "http://localhost:8000/api/protected";
+import { BACKEND_URL } from "./config";
 
 const fetchProtectedData = async (token: string) => {
-  const response = await axios.get(LOCAL_API_URL, {
+  const response = await axios.get(BACKEND_URL, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
