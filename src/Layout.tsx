@@ -8,6 +8,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
         <h1 className="text-2xl font-bold">Zack Field</h1>
       </div>
       <nav className="md:col-span-2 lg:col-span-3 space-x-2">
+        <Link to="/projects" className="text-sm underline">
+          Projects
+        </Link>
         <Link to="/writing" className="text-sm underline">
           Writing
         </Link>
