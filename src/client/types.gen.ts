@@ -8,6 +8,7 @@ export type Bot = {
     id: string;
     creator_id: string;
     creator: User;
+    readonly tokens: number;
 };
 
 export type HTTPValidationError = {

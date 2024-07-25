@@ -29,10 +29,15 @@ export const $Bot = {
         },
         creator: {
             '$ref': '#/components/schemas/User'
+        },
+        tokens: {
+            type: 'integer',
+            title: 'Tokens',
+            readOnly: true
         }
     },
     type: 'object',
-    required: ['name', 'id', 'creator_id', 'creator'],
+    required: ['name', 'id', 'creator_id', 'creator', 'tokens'],
     title: 'Bot'
 } as const;
 

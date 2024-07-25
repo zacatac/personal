@@ -1,6 +1,6 @@
-import { SignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
+import { SignIn, SignOutButton, SignedIn, SignedOut } from "@clerk/clerk-react";
 import { Helmet } from "react-helmet";
-import { Chat } from "./chat";
+import { Chat } from "./Chat";
 const OneBot = () => {
   return (
     <div className="bg-gray-900 text-white min-h-screen">
@@ -25,6 +25,13 @@ const OneBot = () => {
         </div>
       </SignedOut>
       <SignedIn>
+        <div className="absolute top-4 right-4">
+          <SignOutButton redirectUrl="/onebot">
+            <button className="px-2 py-1 border border-gray-500 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+              Sign Out
+            </button>
+          </SignOutButton>
+        </div>
         <Chat />
       </SignedIn>
     </div>

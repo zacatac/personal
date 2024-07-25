@@ -1,3 +1,4 @@
+import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Home from "./Home";
@@ -10,6 +11,7 @@ const queryClient = new QueryClient();
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
+      <Toaster />
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />

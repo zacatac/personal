@@ -1,10 +1,14 @@
-import { SignOutButton, useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/clerk-react";
+import { CategoryBar } from "@tremor/react";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import { useQuery, useQueryClient } from "react-query";
 import { endBot, fetchBot, fetchChatStream } from "./api";
 import { download } from "./download";
 import { Message } from "./types";
+
+const MAX_TOKENS = 4096;
 
 export const Chat = () => {
   const { getToken } = useAuth();
@@ -34,9 +38,13 @@ export const Chat = () => {
     setChatLoading(true);
     setChatError(null);
     try {
+      const name = dataBot?.name;
       const token = await getToken();
       if (!token) throw new Error("No token available");
       await endBot(token);
+      toast.success(`${name} deleted.`, {
+        icon: "💀",
+      });
       setChatResult(null);
     } catch (err) {
       setChatError((err as Error).message);
@@ -97,20 +105,24 @@ export const Chat = () => {
     }
   }, [isLoadingBot]);
 
-  if (isLoading) return <div className="text-white">Loading...</div>;
-  if (error)
+  if (isLoading)
     return (
-      <div className="text-red-500">
-        An error occurred: {(error as Error).message}
+      <div className="text-white flex justify-center items-center h-screen">
+        Loading...
       </div>
     );
+  useEffect(() => {
+    if (error) {
+      toast.error(`An error occurred: ${(error as Error).message}`);
+    }
+  }, [error]);
 
   return (
     <div className="flex justify-center py-8 bg-gray-900 text-white">
-      <div className="max-w-4xl w-full">
+      <div className="max-w-4xl w-full px-4 sm:px-6 lg:px-8">
         {showEndBotModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-            <div className="bg-gray-700 p-6 rounded-lg shadow-lg">
+            <div className="bg-gray-700 p-6 rounded-lg shadow-lg w-full max-w-md">
               <h2 className="text-lg font-medium text-white">
                 Confirm Ending {dataBot?.name}
               </h2>
@@ -138,37 +150,29 @@ export const Chat = () => {
 
         <div className="mt-4 sticky top-2 z-10 bg-gray-900">
           <div className="bg-gray-800 shadow-md rounded-lg p-4 relative">
-            <div className="flex justify-between items-center">
-              <div className="space-y-1">
+            <div className="flex flex-col sm:flex-row justify-between items-center">
+              <div className="space-y-1 w-full sm:w-1/3">
                 <p className="text-md font-medium text-gray-300">
                   You're chatting with{" "}
                   <span className="font-bold">{dataBot?.name}</span>
                 </p>
-                <p>They have about 100,000 tokens left...</p>
+                <p className="text-sm font-medium text-gray-300">
+                  Once his tokens are used up {dataBot?.name} will expire, so
+                  cherish this time together.
+                </p>
               </div>
-              <div className="space-x-2">
-                <SignOutButton redirectUrl="/onebot">
-                  <button className="px-2 py-1 border border-gray-500 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
-                    Sign Out
-                  </button>
-                </SignOutButton>
-                <button
-                  onClick={() => setShowEndBotModal(true)}
-                  className="px-2 py-1 bg-red-500 text-white rounded-lg"
-                >
-                  End {dataBot?.name}'s Life 💀
-                </button>
-                <button
-                  onClick={() =>
-                    download({
-                      bot: dataBot,
-                      messages: messages,
-                    })
-                  }
-                  className="px-2 py-1 bg-green-500 text-white rounded-lg"
-                >
-                  Download Keepsakes 📸
-                </button>
+              <div className="mt-2 w-full sm:w-1/2">
+                <CategoryBar
+                  values={[40, 30, 20, 10]}
+                  colors={["emerald", "yellow", "orange", "rose"]}
+                  markerValue={((dataBot?.tokens ?? 0) / MAX_TOKENS) * 100}
+                  tooltip={`How many tokens ${dataBot?.name} has left: ${
+                    MAX_TOKENS - (dataBot?.tokens ?? 0)
+                  }. 😔`}
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  {dataBot?.tokens} / {MAX_TOKENS} tokens used
+                </p>
               </div>
             </div>
           </div>
@@ -217,32 +221,66 @@ export const Chat = () => {
             ref={(el) => el && el.scrollIntoView({ behavior: "auto" })}
           ></div>
         </div>
-        <div className="mt-4 flex">
-          <input
-            type="text"
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-            className="flex-grow px-4 py-2 text-sm border rounded-l-lg bg-gray-700 text-white"
-            placeholder="Type your message..."
-          />
-          <button
-            onClick={handleFetchChat}
-            className="px-4 py-2 bg-blue-500 text-white rounded-r-lg"
-            disabled={chatLoading}
-          >
-            {chatLoading ? (
-              "Loading..."
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="currentColor"
+        <div className="space-y-2">
+          <div className="mt-4 flex flex-col sm:flex-row">
+            <input
+              type="text"
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleFetchChat();
+                  e.currentTarget.blur();
+                }
+              }}
+              className="flex-grow px-4 py-2 text-sm border rounded-t-lg sm:rounded-l-lg sm:rounded-t-none bg-gray-700 text-white"
+              placeholder="Type your message..."
+              ref={(input) => input && input.focus()}
+            />
+            <button
+              onClick={() => {
+                handleFetchChat();
+                /* @ts-ignore */
+                document.querySelector('input[type="text"]').focus();
+              }}
+              className="px-4 py-2 bg-blue-500 text-white rounded-b-lg sm:rounded-r-lg sm:rounded-b-none"
+              disabled={chatLoading}
+            >
+              {chatLoading ? (
+                "🤔..."
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M2 12l1.41 1.41L11 5.83V20h2V5.83l7.59 7.58L22 12l-10-10L2 12z" />
+                </svg>
+              )}
+            </button>
+          </div>
+          {messages.length > 0 && (
+            <div className="space-x-2">
+              <button
+                onClick={() => setShowEndBotModal(true)}
+                className="px-2 py-1 bg-red-500 text-white rounded-lg"
               >
-                <path d="M2 12l1.41 1.41L11 5.83V20h2V5.83l7.59 7.58L22 12l-10-10L2 12z" />
-              </svg>
-            )}
-          </button>
+                Delete {dataBot?.name} 💀
+              </button>
+              <button
+                onClick={() =>
+                  download({
+                    bot: dataBot,
+                    messages: messages,
+                  })
+                }
+                className="px-2 py-1 bg-green-500 text-white rounded-lg"
+              >
+                Download Keepsakes 📸
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
