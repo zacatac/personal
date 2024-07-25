@@ -1,6 +1,6 @@
 import { useAuth } from "@clerk/clerk-react";
 import { CategoryBar } from "@tremor/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import { useQuery, useQueryClient } from "react-query";
@@ -13,6 +13,13 @@ const MAX_TOKENS = 4096;
 export const Chat = () => {
   const { getToken } = useAuth();
   const queryClient = useQueryClient();
+
+  const [showEndBotModal, setShowEndBotModal] = useState(false);
+  const [chatResult, setChatResult] = useState<Message | null>(null);
+  const [chatLoading, setChatLoading] = useState(false);
+  const [chatError, setChatError] = useState<string | null>(null);
+  const [inputMessage, setInputMessage] = useState<string>("");
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const {
     isLoading: isLoadingBot,
@@ -34,7 +41,7 @@ export const Chat = () => {
     }
   );
 
-  const handleEndBot = async () => {
+  const handleEndBot = useCallback(async () => {
     setChatLoading(true);
     setChatError(null);
     try {
@@ -53,18 +60,9 @@ export const Chat = () => {
       setShowEndBotModal(false);
       queryClient.invalidateQueries("bot");
     }
-  };
+  }, [dataBot, getToken, queryClient]);
 
-  const isLoading = isLoadingBot;
-  const error = errorBot;
-  const [showEndBotModal, setShowEndBotModal] = useState(false);
-  const [chatResult, setChatResult] = useState<Message | null>(null);
-  const [chatLoading, setChatLoading] = useState(false);
-  const [chatError, setChatError] = useState<string | null>(null);
-  const [inputMessage, setInputMessage] = useState<string>("");
-  const [messages, setMessages] = useState<Message[]>([]);
-
-  const handleFetchChat = async () => {
+  const handleFetchChat = useCallback(async () => {
     setChatLoading(true);
     setChatError(null);
     try {
@@ -97,7 +95,7 @@ export const Chat = () => {
       setChatLoading(false);
       setInputMessage("");
     }
-  };
+  }, [getToken, inputMessage, queryClient]);
 
   useEffect(() => {
     if (isLoadingBot) {
@@ -105,17 +103,18 @@ export const Chat = () => {
     }
   }, [isLoadingBot]);
 
-  if (isLoading)
+  useEffect(() => {
+    if (errorBot) {
+      toast.error(`An error occurred: ${(errorBot as Error).message}`);
+    }
+  }, [errorBot]);
+
+  if (isLoadingBot)
     return (
       <div className="text-white flex justify-center items-center h-screen">
         Loading...
       </div>
     );
-  useEffect(() => {
-    if (error) {
-      toast.error(`An error occurred: ${(error as Error).message}`);
-    }
-  }, [error]);
 
   return (
     <div className="flex justify-center py-8 bg-gray-900 text-white">

@@ -25,14 +25,18 @@ const OneBot = () => {
         </div>
       </SignedOut>
       <SignedIn>
-        <div className="absolute top-4 right-4">
-          <SignOutButton redirectUrl="/onebot">
-            <button className="px-2 py-1 border border-gray-500 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
-              Sign Out
-            </button>
-          </SignOutButton>
+        <div className="flex flex-col items-center p-4">
+          <div className="w-full flex justify-end mb-4">
+            <SignOutButton redirectUrl="/onebot">
+              <button className="px-4 py-2 border border-gray-500 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+                Sign Out
+              </button>
+            </SignOutButton>
+          </div>
+          <div className="w-full">
+            <Chat />
+          </div>
         </div>
-        <Chat />
       </SignedIn>
     </div>
   );
