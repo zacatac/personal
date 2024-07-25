@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { UserMeGetResponse, StreamChatChatGetData, StreamChatChatGetResponse } from './types.gen';
+import type { UserMeGetResponse, BotBotGetResponse, DeleteBotBotDeleteResponse, StreamChatChatGetData, StreamChatChatGetResponse } from './types.gen';
 
 /**
  * User
@@ -13,6 +13,26 @@ import type { UserMeGetResponse, StreamChatChatGetData, StreamChatChatGetRespons
 export const userMeGet = (): CancelablePromise<UserMeGetResponse> => { return __request(OpenAPI, {
     method: 'GET',
     url: '/me'
+}); };
+
+/**
+ * Bot
+ * @returns Bot Successful Response
+ * @throws ApiError
+ */
+export const botBotGet = (): CancelablePromise<BotBotGetResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/bot'
+}); };
+
+/**
+ * Delete Bot
+ * @returns unknown Successful Response
+ * @throws ApiError
+ */
+export const deleteBotBotDelete = (): CancelablePromise<DeleteBotBotDeleteResponse> => { return __request(OpenAPI, {
+    method: 'DELETE',
+    url: '/bot'
 }); };
 
 /**
