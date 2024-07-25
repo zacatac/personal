@@ -1,9 +1,13 @@
 import { SignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
+import { Helmet } from "react-helmet";
 import { Chat } from "./chat";
-
 const OneBot = () => {
   return (
     <div className="bg-gray-900 text-white min-h-screen">
+      <Helmet>
+        <title>Onebot</title>
+        <link rel="icon" href="/favicon-onebot.ico" />
+      </Helmet>
       <SignedOut>
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900">
           <h1 className="text-4xl font-bold mb-8">Welcome to Onebot!</h1>

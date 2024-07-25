@@ -136,7 +136,7 @@ export const Chat = () => {
           </div>
         )}
 
-        <div className="mt-4 sticky top-0 z-10 bg-gray-900">
+        <div className="mt-4 sticky top-2 z-10 bg-gray-900">
           <div className="bg-gray-800 shadow-md rounded-lg p-4 relative">
             <div className="flex justify-between items-center">
               <div className="space-y-1">
@@ -180,7 +180,7 @@ export const Chat = () => {
           </div>
         )}
 
-        <div className="overflow-y-auto max-h-[80vh] scrollbar scrollbar-thumb-gray-700 scrollbar-track-gray-900 mt-12">
+        <div className="overflow-y-auto max-h-[80vh] scrollbar scrollbar-thumb-gray-700 scrollbar-track-gray-900 mt-12 rounded-lg">
           {messages?.map((message, index) => (
             <div
               key={index}
@@ -189,7 +189,7 @@ export const Chat = () => {
               }`}
             >
               <div
-                className={`bg-gray-800 shadow-md rounded-lg p-4 max-w-md ${
+                className={`bg-gray-800 shadow-md rounded-lg p-4 max-w-sm ${
                   message.role === "user" ? "text-right" : "text-left"
                 }`}
               >
@@ -206,7 +206,7 @@ export const Chat = () => {
 
           {chatResult && !!chatResult?.content && (
             <div className="mt-2 flex justify-start">
-              <div className="bg-gray-800 shadow-md rounded-lg p-4 max-w-md text-left">
+              <div className="bg-gray-800 shadow-md rounded-lg p-4 max-w-sm text-left">
                 <div className="mt-1 text-sm text-gray-400">
                   <ReactMarkdown>{chatResult.content}</ReactMarkdown>
                 </div>
