@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { UserMeGetResponse } from './types.gen';
+import type { UserMeGetResponse, StreamChatChatGetData, StreamChatChatGetResponse } from './types.gen';
 
 /**
  * User
@@ -13,4 +13,22 @@ import type { UserMeGetResponse } from './types.gen';
 export const userMeGet = (): CancelablePromise<UserMeGetResponse> => { return __request(OpenAPI, {
     method: 'GET',
     url: '/me'
+}); };
+
+/**
+ * Stream Chat
+ * @param data The data for the request.
+ * @param data.message
+ * @returns unknown Successful Response
+ * @throws ApiError
+ */
+export const streamChatChatGet = (data: StreamChatChatGetData): CancelablePromise<StreamChatChatGetResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/chat',
+    query: {
+        message: data.message
+    },
+    errors: {
+        422: 'Validation Error'
+    }
 }); };
