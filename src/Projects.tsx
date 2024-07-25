@@ -11,7 +11,6 @@ const Projects = () => {
               onebot
             </Link>
           </li>
-          <li>and not much else... yet</li>
         </ul>
       </div>
     </Layout>

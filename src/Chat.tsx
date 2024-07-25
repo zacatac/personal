@@ -21,11 +21,7 @@ export const Chat = () => {
   const [inputMessage, setInputMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const {
-    isLoading: isLoadingBot,
-    error: errorBot,
-    data: dataBot,
-  } = useQuery(
+  const { isLoading: isLoadingBot, data: dataBot } = useQuery(
     "bot",
     async () => {
       const token = await getToken();
@@ -34,6 +30,14 @@ export const Chat = () => {
     },
     {
       enabled: !!getToken,
+      retry: false, // Disable retry to avoid masking 404 errors
+      onError: (error) => {
+        /* @ts-ignore */
+        const errorMessage = error.body?.detail || error.message;
+        toast.error(`${errorMessage}`);
+        setMessages([]);
+        setChatResult(null);
+      },
       onSuccess: (dataBot) => {
         setMessages((dataBot?.context?.messages as Message[])?.slice(1) ?? []);
         setChatResult(null);
@@ -103,12 +107,6 @@ export const Chat = () => {
     }
   }, [isLoadingBot]);
 
-  useEffect(() => {
-    if (errorBot) {
-      toast.error(`An error occurred: ${(errorBot as Error).message}`);
-    }
-  }, [errorBot]);
-
   if (isLoadingBot)
     return (
       <div className="text-white flex justify-center items-center h-screen">
@@ -156,7 +154,7 @@ export const Chat = () => {
                   <span className="font-bold">{dataBot?.name}</span>
                 </p>
                 <p className="text-sm font-medium text-gray-300">
-                  Once his tokens are used up {dataBot?.name} will expire, so
+                  Once their tokens are used up {dataBot?.name} will expire, so
                   cherish this time together.
                 </p>
               </div>

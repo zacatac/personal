@@ -13,7 +13,6 @@ const Writing = () => {
               Federating GraphQL
             </a>
           </li>
-          <li>and not much else... yet</li>
         </ul>
       </div>
     </Layout>
