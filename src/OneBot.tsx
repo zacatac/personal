@@ -21,7 +21,8 @@ const OneBot = () => {
             Since the value comes from persistence, we need you to sign in /
             sign up.
           </p>
-          <SignIn forceRedirectUrl={"/onebot"} />
+
+          <SignIn />
         </div>
       </SignedOut>
       <SignedIn>
