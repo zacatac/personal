@@ -1,4 +1,10 @@
-import { SignIn, SignOutButton, SignedIn, SignedOut } from "@clerk/clerk-react";
+import {
+  SignInButton,
+  SignOutButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+} from "@clerk/clerk-react";
 import { Helmet } from "react-helmet";
 import { Chat } from "./Chat";
 const OneBot = () => {
@@ -21,8 +27,18 @@ const OneBot = () => {
             Since the value comes from persistence, we need you to sign in /
             sign up.
           </p>
-
-          <SignIn />
+          <div className="flex space-x-4">
+            <SignInButton mode="modal">
+              <button className="px-4 py-2 border border-gray-500 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+                Sign In
+              </button>
+            </SignInButton>
+            <SignUpButton mode="modal">
+              <button className="px-4 py-2 border border-gray-500 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+                Sign Up
+              </button>
+            </SignUpButton>
+          </div>
         </div>
       </SignedOut>
       <SignedIn>
