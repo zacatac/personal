@@ -258,7 +258,7 @@ export const Chat = () => {
             </button>
           </div>
           {messages.length > 0 && (
-            <div className="space-x-2">
+            <div className="md:space-x-2 space-y-2 md:space-y-0">
               <button
                 onClick={() => setShowEndBotModal(true)}
                 className="px-2 py-1 bg-red-500 text-white rounded-lg"
